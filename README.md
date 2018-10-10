@@ -8,4 +8,7 @@ TODOs
 - add css ids to complete and exit
 - move exit to bottom left under viz
 - make it vertical
-- add annotation in csvs to determine forward or reverse progression, style differently
+- add logic to check for forward/reverse movement in edgelist.csv data (rather than hardcoding it) - or consider making this a step in the data pull
+- style arc paths differently for forward/reverse movement
+- include # of exits - as total first, but later as total from each individual step
+- add hover info (forward/reverse, amount)

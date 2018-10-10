@@ -5,7 +5,7 @@
     <style>
       body {
         font-family: Lucide Sans Unicode, Tahoma, Verdana, sans-serif;
-        fill: #CF7D1C;
+        fill: #213469;
         font-size: 11px;
       }
       .arc {
@@ -20,7 +20,7 @@
         fill: #FE9922;
       }
       path.active {
-        stroke: #FE9922;
+        stroke: #369;
       }
       circle.source {
         fill: #FE9922;
@@ -29,7 +29,14 @@
         fill: #FE9922;
       }
       h4 {
-        color: #CF7D1C;
+        color: #213469;
+      }
+      .label {
+        font-family: sans-serif;
+        text-anchor: middle;
+        color: #FE9922;
+        font-size: 24px;
+        border: 5px solid red;
       }
     </style>
   </head>
@@ -46,8 +53,7 @@
     <div id="viz">
       <p>Hover over the nodes to highlight them in orange. The width of the edges correslate to the weight of the connection.
       </p>
-      <h4>Forward progression above -></h4>
-      <svg style="width:800px;height:400px;" ></svg>
+      <svg style="width:800px;height:600px;" ></svg>
     </div>
     <script>
         /*
@@ -64,8 +70,8 @@
 
       Promise
         .all([
-          PromiseWrapper("nodelist2.csv"),
-          PromiseWrapper("edgelist2.csv")
+          PromiseWrapper("nodelist.csv"),
+          PromiseWrapper("edgelist.csv")
         ])
         .then(resolve => {
           createArcDiagram(resolve[0], resolve[1])
@@ -79,7 +85,7 @@
           // node at index x, turn x into an int and multiply it by 30
           // this will become our x-axis
           node.x = parseInt(x) * 60;
-          // not in use, but will be used as y axis when we convert this into a vertical diagram
+          // not in use here, but will be used as y axis when we convert this into a vertical diagram
           node.y = parseInt(x) * 60;
         });
 
@@ -91,7 +97,20 @@
         });
 
         var arcG = d3.select("svg").append("g").attr("id", "arcG")
-            .attr("transform", "translate(50,150)");
+            .attr("transform", "translate(200,50)");
+
+        // build the arrow markers for the arcs to show direction
+        arcG.append("defs").append("marker")
+            .attr("id", "arrow")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 0)
+            .attr("refY", 0)
+            .attr("markerWidth", 2)
+            .attr("markerHeight", 2)
+            .attr("orient", "auto")
+          .append("svg:path")
+            // dimensions of the arrow?
+            .attr("d", "M0,-5L10,0L0,5")
 
         arcG.selectAll("path")
           .data(edges)
@@ -101,8 +120,11 @@
             .style("stroke-width", d => d.weight * 2)
             .style("opacity", .25)
             .attr("d", arc);
+            // .attr("marker-start", "url(#arrow)");
 
-/* temp remove circles - maybe replace with rects?
+
+        // circles - removed for now
+        /*
         arcG.selectAll("circle")
           .data(nodes)
           .enter()
@@ -110,8 +132,10 @@
             .attr("class", "node")
             .attr("node", d => d.id)
             .attr("r", 10)
-            .attr("cx", d => d.x);
-*/
+            // for horizontal circles:
+            // .attr("cx",d => d.x);
+            .attr("cy", d => d.x);
+        */
 
         arcG.selectAll("text")
             .data(nodes)
@@ -123,34 +147,30 @@
             //.attr("x", function(d) { return d.x; })
             //.attr("y", function(d) { return 40; })
             .attr("transform",function(d,i){
-                return "translate(" + d.x + ",10) rotate(50)"
+                // for horizontal arc diagram:
+                // return "translate(" + d.x + ",10) rotate(50)"
+                // for vertical arc diagram: 
+                // test: return "translate(10," + d.x + ") rotate(50)"
+                return "translate(10," +d.x + ")"
             })
-            .text(d => d.id)
-            .attr("font-family", "sans-serif")
-            .style("text-anchor", "middle")
-            .attr("color", "#FE9922")
-            .attr("font-size", "20px");
+            .text(d => d.id);
             //.attr("transform", "translate(0,25) rotate(50)");
 
-/* the rotate is about the origin of the current user coordinate system
+            /* the rotate is about the origin of the current user coordinate system
 
-accepted
-Rotation is relative to an element's parent origin:
+            accepted
+            Rotation is relative to an element's parent origin:
 
-the rotate is about the origin of the current user coordinate system.(source)
+            the rotate is about the origin of the current user coordinate system.(source)
 
-unless specifying a rotational point. Since all your text shares the same coordinate system (that of the parent g),
-they all get rotated together, as a block as you note. And they are rotated around [0,0] of the parent g,
-not around their anchor or any point related to where the text lies.
+            unless specifying a rotational point. Since all your text shares the same coordinate system (that of the parent g),
+            they all get rotated together, as a block as you note. And they are rotated around [0,0] of the parent g,
+            not around their anchor or any point related to where the text lies.
 
-Instead of appending text directly to the chart's g, you could append each label to its own g.
-If each of these g elements are transformed so that their origins correspond to text locations, rotation becomes easy.
+            Instead of appending text directly to the chart's g element, you could append each label to its own g.
+            If each of these g elements are transformed so that their origins correspond to text locations, rotation becomes easy.
 
-*/
-        /** On mouseover, nodes highlighted in orange
-         *  On click of an edge, source and target nodes turn green and dark green
-         *
-        */
+            */
 
         d3.selectAll("circle").on("mouseover", nodeOver);
         d3.selectAll("path").on("mouseover", edgeOver);
@@ -168,13 +188,24 @@ If each of these g elements are transformed so that their origins correspond to 
 
         function arc(d,i) {
           var draw = d3.line().curve(d3.curveBasis);
-          var midX = (d.source.x + d.target.x) / 2;
-          var midY = (d.source.x - d.target.x);
-          return draw([[d.source.x,0],[midX,midY],[d.target.x,0]]);
+
+          // first specify the mid range for how far out the arc should go.
+          // for horizontal arc diagram:
+          // var midX = (d.source.x + d.target.x) / 2;
+          // var midY = (d.source.x - d.target.x);
+          // for vertical arc diagram: 
+          var midY = (d.source.x + d.target.x) / 2;
+          var midX = (d.source.x - d.target.x);
+
+          // then draw the arc
+          // for horizontal arc: 
+          // return draw([[d.source.x,0],[midX,midY],[d.target.x,0]]);
+          // for veritcal arc: 
+          // return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
+          return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
         }
       }
     </script>
-    <h4><- Reverse below</h4>
     <div id="footer">
       <p>In nodelist2.csv, you could append additional data about each step if useful (id,something,something)</p>
     </div>
