@@ -2,7 +2,7 @@
 
 work in progress
 
-![alt text](https://github.com/schroeder-luna/arc-diagram/blob/master/thumbnail.PNG)
+![alt text](https://github.com/schroeder-luna/arc-diagram/blob/master/thumbnail-vertical.PNG)
 
 TODOs
 - add css ids to complete and exit
