@@ -38,6 +38,10 @@
         font-size: 24px;
         border: 5px solid red;
       }
+      #arrow {
+        stroke: none;
+        fill: black;
+      }
     </style>
   </head>
   <body>
@@ -99,18 +103,26 @@
         var arcG = d3.select("svg").append("g").attr("id", "arcG")
             .attr("transform", "translate(200,50)");
 
+        // not in use - maybe work on later
         // build the arrow markers for the arcs to show direction
+        
         arcG.append("defs").append("marker")
             .attr("id", "arrow")
             .attr("viewBox", "0 -5 10 10")
             .attr("refX", 0)
             .attr("refY", 0)
-            .attr("markerWidth", 2)
-            .attr("markerHeight", 2)
+            .attr("markerWidth", 10)
+            .attr("markerHeight", 10)
+            // specifies NOT to let arrows inherit size of path
+            .attr("markerUnits","userSpaceOnUse")
             .attr("orient", "auto")
           .append("svg:path")
             // dimensions of the arrow?
-            .attr("d", "M0,-5L10,0L0,5")
+            .attr("d", "M0,-5L10,0L0,5");
+            
+        // update color 
+        // https://bl.ocks.org/denisemauldin/d797804c235365526e8b85c3081c4271
+
 
         arcG.selectAll("path")
           .data(edges)
@@ -119,8 +131,8 @@
             .attr("class", "arc")
             .style("stroke-width", d => d.weight * 2)
             .style("opacity", .25)
-            .attr("d", arc);
-            // .attr("marker-start", "url(#arrow)");
+            .attr("d", arc)
+            .attr("marker-mid", "url(#arrow)");
 
 
         // circles - removed for now
@@ -205,6 +217,7 @@
           return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
         }
       }
+
     </script>
     <div id="footer">
       <p>In nodelist2.csv, you could append additional data about each step if useful (id,something,something)</p>
