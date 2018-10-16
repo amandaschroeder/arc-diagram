@@ -1,6 +1,7 @@
 # arc-diagram
 
-work in progress
+##### work in progress
+![alt text](https://github.com/schroeder-luna/arc-diagram/blob/master/thumbnail-progression.PNG)
 
 ###### Vertical arc diagram:
 ![alt text](https://github.com/schroeder-luna/arc-diagram/blob/master/thumbnail-vertical.PNG)
