@@ -2,7 +2,12 @@
 
 work in progress
 
+Vertical arc diagram:
 ![alt text](https://github.com/schroeder-luna/arc-diagram/blob/master/thumbnail-vertical.PNG)
+
+Horizonatal arc diagram:
+![alt text](https://github.com/schroeder-luna/arc-diagram/blob/master/thumbnail-horizontal.PNG)
+
 
 TODOs
 - add css ids to complete and exit

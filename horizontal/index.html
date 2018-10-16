@@ -64,9 +64,6 @@
         *  Tips:
         *    - remove the .arc styles above for an entirely different look
         *
-        * @TODO: 
-        *   - add additional data to nodeslist.csv to determine whether link goes forward or backward, 
-        *   use that as an attribute and color the links differently
         */
 
 
@@ -119,10 +116,6 @@
           .append("svg:path")
             // dimensions of the arrow?
             .attr("d", "M0,-5L10,0L0,5");
-            
-        // update color 
-        // https://bl.ocks.org/denisemauldin/d797804c235365526e8b85c3081c4271
-
 
         arcG.selectAll("path")
           .data(edges)
@@ -160,10 +153,11 @@
             //.attr("y", function(d) { return 40; })
             .attr("transform",function(d,i){
                 // for horizontal arc diagram:
-                // return "translate(" + d.x + ",10) rotate(50)"
+                return "translate(" + d.x + ",10) rotate(50)"
+                
                 // for vertical arc diagram: 
                 // test: return "translate(10," + d.x + ") rotate(50)"
-                return "translate(10," +d.x + ")"
+                // return "translate(10," +d.x + ")"
             })
             .text(d => d.id);
             //.attr("transform", "translate(0,25) rotate(50)");
@@ -204,21 +198,21 @@
           // first specify the mid range for how far out the arc should go.
           
           // for horizontal arc diagram:
-          // var midX = (d.source.x + d.target.x) / 2;
-          // var midY = (d.source.x - d.target.x);
+          var midX = (d.source.x + d.target.x) / 2;
+          var midY = (d.source.x - d.target.x);
 
           // for vertical arc diagram: 
-          var midY = (d.source.x + d.target.x) / 2;
-          var midX = (d.source.x - d.target.x);
+          // var midY = (d.source.x + d.target.x) / 2;
+          // var midX = (d.source.x - d.target.x);
 
           // then draw the arc
 
           // for horizontal arc: 
-          // return draw([[d.source.x,0],[midX,midY],[d.target.x,0]]);
+          return draw([[d.source.x,0],[midX,midY],[d.target.x,0]]);
 
           // for veritcal arc: 
           // return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
-          return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
+          // return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
         }
       }
 

@@ -64,9 +64,6 @@
         *  Tips:
         *    - remove the .arc styles above for an entirely different look
         *
-        * @TODO: 
-        *   - add additional data to nodeslist.csv to determine whether link goes forward or backward, 
-        *   use that as an attribute and color the links differently
         */
 
 
@@ -120,9 +117,6 @@
             // dimensions of the arrow?
             .attr("d", "M0,-5L10,0L0,5");
             
-        // update color 
-        // https://bl.ocks.org/denisemauldin/d797804c235365526e8b85c3081c4271
-
 
         arcG.selectAll("path")
           .data(edges)
@@ -133,6 +127,9 @@
             .style("opacity", .25)
             .attr("d", arc)
             .attr("marker-mid", "url(#arrow)");
+
+
+
 
 
         // circles - removed for now
@@ -159,9 +156,6 @@
             //.attr("x", function(d) { return d.x; })
             //.attr("y", function(d) { return 40; })
             .attr("transform",function(d,i){
-                // for horizontal arc diagram:
-                // return "translate(" + d.x + ",10) rotate(50)"
-                // for vertical arc diagram: 
                 // test: return "translate(10," + d.x + ") rotate(50)"
                 return "translate(10," +d.x + ")"
             })
@@ -202,23 +196,39 @@
           var draw = d3.line().curve(d3.curveBasis);
 
           // first specify the mid range for how far out the arc should go.
-          
-          // for horizontal arc diagram:
-          // var midX = (d.source.x + d.target.x) / 2;
-          // var midY = (d.source.x - d.target.x);
-
-          // for vertical arc diagram: 
           var midY = (d.source.x + d.target.x) / 2;
           var midX = (d.source.x - d.target.x);
 
           // then draw the arc
-
-          // for horizontal arc: 
-          // return draw([[d.source.x,0],[midX,midY],[d.target.x,0]]);
-
-          // for veritcal arc: 
           // return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
           return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
+          /* These three arrays represent each arc's x, y, and radius (think - circle)
+          which is why it's so easy to switch between a horizontal arc diagram or a vertical one
+
+          each arc is created individually by the above code that generates paths: 
+
+            arcG.selectAll("path")
+            .data(edges)
+            .enter()
+            .append("path")
+              .attr("class", "arc")
+              .style("stroke-width", d => d.weight * 2)
+              .style("opacity", .25)
+              .attr("d", arc)           <----- right here, 
+                                        and d is representative of the index of the *edge* we're on
+                                        because D3 iterates over each item in d (or in data(edges))
+          
+          So, to figure out whether the line goes to the right or the left (or to control this behavior), 
+          we need to identify what x is and write some logic for handling that
+          - it would be nice to have forward momentum on the right and reverse on the left, as that's what we're used to 
+          seeing in the funnel vis reports in GA.
+          - it would be great to color them differently too (red for reverse/green for forward progression, for example)
+          
+          Probably we should control these things from the path creation stage instead of at the draw stage
+          */
+
+
+
         }
       }
 
