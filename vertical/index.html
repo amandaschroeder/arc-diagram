@@ -11,6 +11,7 @@
       .arc {
         stroke: #9A8B7A;
         fill: none;
+        opacity: .25;
       }
       .node {
         fill: #EBD8C1;
@@ -18,9 +19,6 @@
       }
       circle.active {
         fill: #FE9922;
-      }
-      path.active {
-        stroke: #369;
       }
       circle.source {
         fill: #FE9922;
@@ -41,6 +39,24 @@
       #arrow {
         stroke: none;
         fill: black;
+        opacity:1;
+      }
+      .forward {
+        stroke: #4caf50;
+        fill: none;
+      }
+      .reverse {
+        stroke: #443e38;
+        fill: none;
+      }
+      path.active.forward {
+        stroke: #1b9020;
+        opacity:.5;
+      }
+      path.active.reverse {
+        stroke: #bf8040;
+        opacity:.5;
+        
       }
     </style>
   </head>
@@ -112,9 +128,9 @@
             .attr("markerHeight", 10)
             // specifies NOT to let arrows inherit size of path
             .attr("markerUnits","userSpaceOnUse")
-            .attr("orient", "auto")
+            .attr("orient", "195")
           .append("svg:path")
-            // dimensions of the arrow?
+            // dimensions of the arrow
             .attr("d", "M0,-5L10,0L0,5");
             
 
@@ -122,9 +138,22 @@
           .data(edges)
           .enter()
           .append("path")
-            .attr("class", "arc")
-            .style("stroke-width", d => d.weight * 2)
-            .style("opacity", .25)
+            .attr("class", function(d,i){
+              var midX = (d.source.x - d.target.x);
+              // watch out - could -0 be an issue? test it
+              midX *= -1;
+              if(midX > 0){
+                return "arc forward";
+
+              } else if(midX < 0){
+                return "arc reverse";
+
+              } else if(midX = 0){
+                return "arc none";
+
+              }
+            })
+            .style("stroke-width", d => d.weight * 2.75)
             .attr("d", arc)
             .attr("marker-mid", "url(#arrow)");
 
@@ -250,6 +279,33 @@
 
 
         }
+        
+        function determineProgression(d,i) {
+
+          var midX = (d.source.x - d.target.x);
+          console.log('midX - - - d.source.x: ' + d.source.x + ' - d.target.x: ' + d.target.x + 'source - target = ' + (d.source.x - d.target.x));
+
+          // midX is the one we want to focus on to control which side of the diagram each path is set on
+          // x coord starts at zero, with zero being the middle of the diagram
+          // path will be on the left if the midX value is negative
+          // path will be on the right if the midX value is positive
+
+          // *** flip these ^
+          // Math.abs(x) or x *= -1 will do the trick.
+          // watch out - could -0 be an issue? test it
+          midX *= -1;
+          if(midX > 0){
+            return "arc forward";
+
+          } else if(midX < 0){
+            return "arc reverse";
+
+          } else if(midX = 0){
+            return "arc none";
+
+          }
+        }
+
       }
 
     </script>
