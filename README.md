@@ -2,10 +2,10 @@
 
 work in progress
 
-Vertical arc diagram:
+- Vertical arc diagram:
 ![alt text](https://github.com/schroeder-luna/arc-diagram/blob/master/thumbnail-vertical.PNG)
 
-Horizonatal arc diagram:
+- Horizonatal arc diagram:
 ![alt text](https://github.com/schroeder-luna/arc-diagram/blob/master/thumbnail-horizontal.PNG)
 
 
