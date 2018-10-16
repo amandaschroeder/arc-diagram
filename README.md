@@ -10,7 +10,7 @@ work in progress
 
 
 
-TODOs
+###### TODOs
 - add css ids to complete and exit
 - move exit to bottom left under viz
 - make it vertical

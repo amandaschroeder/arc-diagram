@@ -98,7 +98,7 @@
         });
 
         var arcG = d3.select("svg").append("g").attr("id", "arcG")
-            .attr("transform", "translate(200,50)");
+            .attr("transform", "translate(250,50)");
 
         // not in use - maybe work on later
         // build the arrow markers for the arcs to show direction
@@ -192,12 +192,32 @@
             .classed("target", p => p === d.target);
         }
 
+        /** Function arc takes the edges data we pass it and adds an index number to each edge datum
+        * midY = edge data .source .x + edge data .target .x / 2 ---> 
+        * 
+        */
         function arc(d,i) {
           var draw = d3.line().curve(d3.curveBasis);
 
           // first specify the mid range for how far out the arc should go.
           var midY = (d.source.x + d.target.x) / 2;
           var midX = (d.source.x - d.target.x);
+          // console.log('midY: ' + midY + ' - midX: ' + midX);
+          // console.log('midY - - - d.source.x: ' + d.source.x + ' - d.target.x: ' + d.target.x + 'source + target = ' + (d.source.x + d.target.x) + ', /2 = ' + (d.source.x + d.target.x)/2 );
+          console.log('midX - - - d.source.x: ' + d.source.x + ' - d.target.x: ' + d.target.x + 'source - target = ' + (d.source.x - d.target.x));
+
+          // midX is the one we want to focus on to control which side of the diagram each path is set on
+          // x coord starts at zero, with zero being the middle of the diagram
+          // path will be on the left if the midX value is negative
+          // path will be on the right if the midX value is positive
+
+          // *** flip these ^
+          // Math.abs(x) or x *= -1 will do the trick.
+          // watch out - could -0 be an issue? test it
+          midX *= -1;
+
+          // @TODO 
+          // *** and then deal with coloring them differently (maybe create a similar/separate function for that)
 
           // then draw the arc
           // return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
