@@ -15,5 +15,6 @@
 - add css ids to complete and exit
 - move exit to bottom left under viz
 - include # of exits - as total first, but later as total from each individual step
-- add hover info (forward/reverse, amount)
+- add hover tool tip info (forward/reverse, amount)
+- clean up tool tips
 - add ability to utilize json instead of csv

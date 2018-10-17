@@ -56,7 +56,17 @@
       path.active.reverse {
         stroke: #bf8040;
         opacity:.5;
-        
+      }
+      title {
+        position: absolute;
+        text-align: center;
+        width: 60px;
+        height: 28px;
+        padding: 2px;
+        font: 12px sans-serif;
+        background: lightsteelblue;
+        border: 0px;
+        border-radius: 8px;
       }
     </style>
   </head>
@@ -81,7 +91,10 @@
         *    - remove the .arc styles above for an entirely different look
         *
         */
-
+      
+      var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
 
       var PromiseWrapper = d => new Promise(resolve => d3.csv(d, p => resolve(p)));
 
@@ -156,9 +169,11 @@
             .style("stroke-width", d => d.weight * 2.75)
             .attr("d", arc)
             .attr("marker-mid", "url(#arrow)");
-
-
-
+            // add basic tooltip
+            // .style("pointer-events","all")
+            // .append("title")
+              // .text(function(d) { return d.weight; });
+          
 
 
         // circles - removed for now
@@ -209,17 +224,52 @@
 
         d3.selectAll("circle").on("mouseover", nodeOver);
         d3.selectAll("path").on("mouseover", edgeOver);
+        d3.selectAll("path").on("mouseout", edgeOut);
+
         function nodeOver(d) {
           d3.selectAll("circle").classed("active", p => p === d);
           d3.selectAll("path").classed("active", p => p.source === d
             || p.target === d);
         }
-        function edgeOver(d) {
+
+        // @TODO there's probably a better way to implement tool tips...
+        // this currently updates all path elements with a text element, rather than updating only the one being hovered on
+        // utilize i to clean this up
+        function edgeOver(d,i) {
           d3.selectAll("path").classed("active", p => p === d);
+          // add tooltip logic here instead of below
+          // example tool tip: "X [users/sessions] went from Step A to Step B. Y [users/sessions] went from Step B to Step A."
+          // we want the tool tip to appear when hovering on the path, not the step name
+          // or do we want both?
+          d3.selectAll("path")
+            //.style("pointer-events","all")
+            .append("title")
+             .text(function(d,i) { 
+               console.log(d + ' - ' + i);
+               if(d.weight == '1'){ 
+                 return d.weight.toString() + ' User';
+               } else { 
+                return d.weight.toString() + ' Users'; 
+               }
+             });
+
+
+
+          /*
           d3.selectAll("circle")
             .classed("source", p => p === d.source)
             .classed("target", p => p === d.target);
+            */
         }
+
+        
+        function edgeOut(d) {
+          d3.selectAll("title").remove();
+        }
+
+
+
+
 
         /** Function arc takes the edges data we pass it and adds an index number to each edge datum
         * midY = edge data .source .x + edge data .target .x / 2 ---> 
@@ -233,7 +283,7 @@
           var midX = (d.source.x - d.target.x);
           // console.log('midY: ' + midY + ' - midX: ' + midX);
           // console.log('midY - - - d.source.x: ' + d.source.x + ' - d.target.x: ' + d.target.x + 'source + target = ' + (d.source.x + d.target.x) + ', /2 = ' + (d.source.x + d.target.x)/2 );
-          console.log('midX - - - d.source.x: ' + d.source.x + ' - d.target.x: ' + d.target.x + 'source - target = ' + (d.source.x - d.target.x));
+          // console.log('midX - - - d.source.x: ' + d.source.x + ' - d.target.x: ' + d.target.x + 'source - target = ' + (d.source.x - d.target.x));
 
           // midX is the one we want to focus on to control which side of the diagram each path is set on
           // x coord starts at zero, with zero being the middle of the diagram
