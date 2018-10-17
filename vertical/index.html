@@ -32,9 +32,9 @@
       .label {
         font-family: sans-serif;
         text-anchor: middle;
-        color: #FE9922;
-        font-size: 24px;
-        border: 5px solid red;
+        fill: #213469;
+        font-size: 26px;
+        text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
       }
       #arrow {
         stroke: none;
@@ -112,11 +112,10 @@
         // x is just an index
         nodes.forEach((node, x) => {
           nodeHash[node.id] = node;
-          // node at index x, turn x into an int and multiply it by 30
-          // this will become our x-axis
-          node.x = parseInt(x) * 60;
-          // not in use here, but will be used as y axis when we convert this into a vertical diagram
-          node.y = parseInt(x) * 60;
+          // node at index x, turn x into an int and multiply it 
+          // this will become our x OR y axis
+          node.x = parseInt(x) * 70;
+          //node.y = parseInt(x) * 60; // I dont think we use this at all
         });
 
         edges.forEach(edge => {
@@ -166,7 +165,7 @@
 
               }
             })
-            .style("stroke-width", d => d.weight * 2.75)
+            .style("stroke-width", d => d.weight * 3)
             .attr("d", arc)
             .attr("marker-mid", "url(#arrow)");
             // add basic tooltip
