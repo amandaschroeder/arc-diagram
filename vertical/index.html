@@ -322,7 +322,7 @@
 
             */
 
-        d3.selectAll("circle").on("mouseover", nodeOver);
+        // d3.selectAll("circle").on("mouseover", nodeOver);
         d3.selectAll("path").on("mouseover", edgeOver);
         d3.selectAll("path").on("mouseout", edgeOut);
 
@@ -395,12 +395,50 @@
           // watch out - could -0 be an issue? test it
           midX *= -1;
 
-          // @TODO 
-          // *** and then deal with coloring them differently (maybe create a similar/separate function for that)
-
           // then draw the arc
           // return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
-          return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
+
+          // make 0 dynamic
+          // 0 represents the middle of the diagram
+          // we want to pull the arcs away from the text in the middle
+          // 0 will have to fluctuate postively and negatively in order to do this
+          // create an if statement that checks if the current datum is moving forward or reverse
+          var xAxisStartingPoint = function(){
+            if(midX > 0){
+              // forward
+                return 0;
+
+              } else if(midX < 0){
+                // reverse
+                return -50;
+
+              } else if(midX = 0){
+                // is this a possibility? test it
+                return 0;
+
+              }
+          }
+          var xAxisEndingPoint = function(){
+            if(midX > 0){
+              // forward
+                return 0;
+
+              } else if(midX < 0){
+                // reverse
+                return -50;
+
+              } else if(midX = 0){
+                // is this a possibility? test it
+                return 0;
+
+              }
+          }          
+          // ^ testing separating arcs from text
+          //*** may have to return separate draw funcitons for forward/reverse
+          // can maybe control the arrow direction separately too
+          return draw([[xAxisStartingPoint(),d.target.x],[midX,midY],[xAxisEndingPoint(),d.source.x]]);
+
+          // return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
           /* These three arrays represent each arc's x, y, and radius (think - circle)
           which is why it's so easy to switch between a horizontal arc diagram or a vertical one
 
@@ -418,12 +456,7 @@
                                         because D3 iterates over each item in d (or in data(edges))
           
           So, to figure out whether the line goes to the right or the left (or to control this behavior), 
-          we need to identify what x is and write some logic for handling that
-          - it would be nice to have forward momentum on the right and reverse on the left, as that's what we're used to 
-          seeing in the funnel vis reports in GA.
-          - it would be great to color them differently too (red for reverse/green for forward progression, for example)
-          
-          Probably we should control these things from the path creation stage instead of at the draw stage
+          we need to identify what x is 
           */
 
 
