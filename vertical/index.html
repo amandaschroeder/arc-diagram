@@ -54,7 +54,7 @@
         opacity:.5;
       }
       path.active.reverse {
-        stroke: #bf8040;
+        stroke: #443e38;
         opacity:.5;
       }
       title {
@@ -92,6 +92,7 @@
         *
         */
       
+      /*  Getting data from csv files
       var div = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
@@ -106,8 +107,108 @@
         .then(resolve => {
           createArcDiagram(resolve[0], resolve[1])
         });
+      */     
 
-      function createArcDiagram(nodes,edges) {
+      /* We don't need the promises because we're not calling our data from external files
+
+      var PromiseWrapper = d => new Promise(resolve => d3.json(d, p => resolve(p)));
+
+      Promise
+        .all([
+          PromiseWrapper(dataNodes),
+          PromiseWrapper(dataEdges)
+        ])
+        .then(resolve => {
+          createArcDiagram(resolve[0], resolve[1])
+        });
+
+      */
+
+      var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+      // function createArcDiagram(nodes,edges) {
+      (function createArcDiagram() {
+
+        // Get data from js objects instead
+        var nodes = [
+          {id: "Step 1"},
+          {id: "Step 2"},
+          {id: "Step 3"},
+          {id: "Step 4"},
+          {id: "Step 5"},
+          {id: "Step 6"},
+          {id: "Step 7"},
+          {id: "Complete"},
+        ];
+        var edges = [
+          {
+            source: "Step 3", 
+            target: "Step 1", 
+            weight: 5
+          },
+          {
+            source: "Step 3", 
+            target: "Step 4", 
+            weight: 5
+          },
+          {
+            source: "Step 4",
+            target: "Step 5",
+            weight: 5
+          },
+          {
+            source: "Step 6",
+            target: "Step 5",
+            weight: 5
+          },
+          {
+            source: "Step 5",
+            target: "Step 6",
+            weight: 5
+          },
+          {
+            source: "Step 5",
+            target: "Complete",
+            weight: 1
+          },
+          {
+            source: "Step 7",
+            target: "Step 2",
+            weight: 5
+          },
+          {
+            source: "Step 7",
+            target: "Step 5",
+            weight: 2
+          },
+          {
+            source: "Step 1",
+            target: "Step 2",
+            weight: 10
+          },    
+          {
+            source: "Step 2",
+            target: "Step 3",
+            weight: 8
+          },    
+          {
+            source: "Step 6",
+            target: "Step 7",
+            weight: 2
+          },    
+          {
+            source: "Step 7",
+            target: "Complete",
+            weight: 2
+          }     
+        ];
+
+        // see what the data looks like
+        console.log(nodes);
+        console.log(edges);
+
         var nodeHash = {};
         // x is just an index
         nodes.forEach((node, x) => {
@@ -126,7 +227,7 @@
         });
 
         var arcG = d3.select("svg").append("g").attr("id", "arcG")
-            .attr("transform", "translate(250,50)");
+            .attr("transform", "translate(280,50)");
 
         // not in use - maybe work on later
         // build the arrow markers for the arcs to show direction
@@ -329,33 +430,8 @@
 
         }
         
-        function determineProgression(d,i) {
 
-          var midX = (d.source.x - d.target.x);
-          console.log('midX - - - d.source.x: ' + d.source.x + ' - d.target.x: ' + d.target.x + 'source - target = ' + (d.source.x - d.target.x));
-
-          // midX is the one we want to focus on to control which side of the diagram each path is set on
-          // x coord starts at zero, with zero being the middle of the diagram
-          // path will be on the left if the midX value is negative
-          // path will be on the right if the midX value is positive
-
-          // *** flip these ^
-          // Math.abs(x) or x *= -1 will do the trick.
-          // watch out - could -0 be an issue? test it
-          midX *= -1;
-          if(midX > 0){
-            return "arc forward";
-
-          } else if(midX < 0){
-            return "arc reverse";
-
-          } else if(midX = 0){
-            return "arc none";
-
-          }
-        }
-
-      }
+      })();
 
     </script>
     <div id="footer">
