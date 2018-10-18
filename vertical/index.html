@@ -140,7 +140,7 @@
           {id: "Step 5"},
           {id: "Step 6"},
           {id: "Step 7"},
-          {id: "Complete"},
+          {id: "Complete"}
         ];
         var edges = [
           {
@@ -206,8 +206,8 @@
         ];
 
         // see what the data looks like
-        console.log(nodes);
-        console.log(edges);
+        // console.log(nodes);
+        // console.log(edges);
 
         var nodeHash = {};
         // x is just an index
@@ -345,7 +345,7 @@
             //.style("pointer-events","all")
             .append("title")
              .text(function(d,i) { 
-               console.log(d + ' - ' + i);
+               // console.log(d + ' - ' + i);
                if(d.weight == '1'){ 
                  return d.weight.toString() + ' User';
                } else { 
