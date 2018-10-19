@@ -436,9 +436,10 @@
           // ^ testing separating arcs from text
           //*** may have to return separate draw funcitons for forward/reverse
           // can maybe control the arrow direction separately too
-          return draw([[xAxisStartingPoint(),d.target.x],[midX,midY],[xAxisEndingPoint(),d.source.x]]);
-
-          // return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
+          // return draw([[xAxisStartingPoint(),d.target.x],[midX,midY],[xAxisEndingPoint(),d.source.x]]);
+          
+          // regular arcs on x = 0
+          return draw([[0,d.target.x],[midX,midY],[0,d.source.x]]);
           /* These three arrays represent each arc's x, y, and radius (think - circle)
           which is why it's so easy to switch between a horizontal arc diagram or a vertical one
 
